@@ -1,0 +1,290 @@
+/*
+ * VibeHome — tvOS-inspired launcher for Samsung Tizen TVs.
+ * Written for Tizen 4.0 (2018 sets, Chromium 56): no CSS grid, no flex `gap`,
+ * no backdrop-filter. Everything is flexbox + margins and GPU transforms.
+ */
+
+:root {
+    --bg: #000;
+    --band: #131316;
+    --tile: #1d1d22;
+    --text: #f5f5f7;
+    --muted: #8e8e93;
+    --glass: rgba(255, 255, 255, 0.14);
+    --glass-edge: rgba(255, 255, 255, 0.55);
+    --spring: cubic-bezier(0.34, 1.32, 0.5, 1);
+    --ease: cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Outfit", "SamsungOne", "Tizen Sans", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    cursor: none;
+}
+
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+
+/* ---------- Top: clock + pills ---------- */
+
+#top {
+    position: absolute;
+    top: 72px; left: 112px; right: 112px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: transform 520ms var(--ease), opacity 420ms var(--ease);
+}
+
+#greeting { font-size: 30px; font-weight: 400; color: var(--muted); letter-spacing: 0.2px; }
+#clock    { font-size: 148px; font-weight: 200; line-height: 1.02; letter-spacing: -4px; margin-top: 6px; }
+#date     { font-size: 30px; font-weight: 300; color: var(--muted); margin-top: 4px; }
+
+#pills { display: flex; margin-top: 8px; }
+
+.pill {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding: 0 28px;
+    margin-left: 16px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    font-size: 25px;
+    font-weight: 400;
+    color: #d1d1d6;
+    transition: background 180ms, color 180ms, transform 260ms var(--spring);
+}
+.pill-icon { font-size: 20px; margin-right: 12px; opacity: 0.85; }
+.pill.focused { background: #f5f5f7; color: #000; transform: scale(1.06); }
+#pill-wifi.offline .pill-icon { color: #ff453a; }
+#pill-wifi.online .pill-icon { color: #30d158; }
+
+.menu {
+    position: absolute;
+    top: 84px; right: 0;
+    min-width: 300px;
+    padding: 12px;
+    border-radius: 28px;
+    background: rgba(28, 28, 32, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+    transform-origin: top right;
+    transition: opacity 200ms var(--ease), transform 260ms var(--spring);
+}
+.menu.hidden { opacity: 0; transform: scale(0.92) translateY(-12px); pointer-events: none; }
+.menu-item {
+    height: 64px;
+    line-height: 64px;
+    padding: 0 26px;
+    border-radius: 18px;
+    font-size: 26px;
+    color: #d1d1d6;
+}
+.menu-item.focused { background: #f5f5f7; color: #000; }
+
+/* ---------- Shelf: focused dock app ---------- */
+
+#shelf {
+    position: absolute;
+    left: 112px; right: 112px;
+    top: 470px;
+    height: 170px;
+    transition: transform 520ms var(--ease), opacity 380ms var(--ease);
+}
+#shelf-glow {
+    position: absolute;
+    left: -260px; top: -280px;
+    width: 1200px; height: 720px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(229, 9, 20, 0.30) 0%, rgba(229, 9, 20, 0) 65%);
+    transition: opacity 500ms var(--ease);
+    pointer-events: none;
+}
+#shelf-title {
+    position: relative;
+    font-size: 92px;
+    font-weight: 500;
+    letter-spacing: -1.5px;
+    white-space: nowrap;
+    transition: opacity 220ms var(--ease), transform 320ms var(--ease);
+}
+#shelf-title.swap { opacity: 0; transform: translateY(14px); }
+#shelf-hint { position: relative; font-size: 24px; color: var(--muted); margin-top: 10px; }
+
+/* ---------- Lower: dock + grid (slides up together) ---------- */
+
+#lower {
+    position: absolute;
+    left: 0; right: 0;
+    top: 712px;
+    transition: transform 560ms var(--ease);
+}
+
+#dock-band {
+    margin: 0 72px;
+    height: 296px;
+    border-radius: 44px;
+    background: var(--band);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+}
+.row { display: flex; align-items: center; }
+
+#grid-wrap {
+    height: 720px;
+    margin: 56px 112px 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 360ms var(--ease);
+}
+#grid { display: flex; flex-wrap: wrap; transition: transform 420ms var(--ease); }
+
+/* Grid open: dock slides up, clock and shelf move out of the way */
+#stage.grid-open #lower { transform: translateY(-640px); }
+#stage.grid-open #top   { transform: translateY(-40px); opacity: 0; }
+#stage.grid-open #shelf { transform: translateY(-120px); opacity: 0; }
+#stage.grid-open #grid-wrap { opacity: 1; }
+
+/* ---------- Tiles ---------- */
+
+.tile {
+    position: relative;
+    flex: none;
+    border-radius: 22px;
+    background: var(--tile);
+    transition: transform 300ms var(--spring);
+}
+.tile .art {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.tile .art img { max-width: 62%; max-height: 66%; }
+.tile .letter {
+    padding: 0 20px;
+    text-align: center;
+    font-size: 46px;
+    font-weight: 600;
+    line-height: 1.05;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: -0.5px;
+}
+.tile .name {
+    position: absolute;
+    left: 0; right: 0;
+    top: 100%;
+    margin-top: 14px;
+    text-align: center;
+    font-size: 23px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 200ms, transform 260ms var(--ease);
+}
+.tile.focused { transform: scale(1.09) translateY(-8px); z-index: 2; }
+.tile.focused .name { opacity: 1; transform: none; }
+
+.dock-tile { width: 370px; height: 208px; margin-right: 36px; }
+.dock-tile:last-child { margin-right: 0; }
+.dock-tile .name { display: none; }            /* the shelf shows the dock app's name */
+
+.grid-tile { width: 268px; height: 151px; margin: 0 24px 78px 0; }
+.grid-tile .letter { font-size: 31px; padding: 0 14px; }
+.grid-tile .name { font-size: 21px; margin-top: 12px; }
+
+/* ---------- Shared glass highlight ---------- */
+
+#highlight {
+    position: absolute;
+    left: 0; top: 0;
+    width: 100px; height: 100px;
+    border-radius: 26px;
+    background: var(--glass);
+    border: 2px solid var(--glass-edge);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 5;
+    transition: transform 330ms var(--spring), width 330ms var(--spring),
+                height 330ms var(--spring), opacity 200ms, border-radius 200ms;
+}
+#highlight.on { opacity: 1; }
+#highlight.pill-mode { opacity: 0; }
+
+/* ---------- Mascots (your own PNGs, sitting on the dock) ---------- */
+
+#mascots {
+    position: absolute;
+    right: 150px;
+    top: -150px;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 300ms var(--ease);
+}
+#mascots img {
+    height: 150px;
+    margin-left: 18px;
+    -webkit-animation: bob 3.6s ease-in-out infinite;
+    animation: bob 3.6s ease-in-out infinite;
+    transform-origin: 50% 100%;
+}
+#mascots img:nth-child(2) { -webkit-animation-delay: -1.8s; animation-delay: -1.8s; }
+#mascots img.hop { -webkit-animation: hop 520ms var(--spring); animation: hop 520ms var(--spring); }
+#stage.grid-open #mascots { opacity: 0; }
+
+@keyframes bob {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    50%      { transform: translateY(-4px) scaleY(1.02); }
+}
+@keyframes hop {
+    0%   { transform: translateY(0) scale(1, 1); }
+    25%  { transform: translateY(0) scale(1.06, 0.92); }
+    55%  { transform: translateY(-26px) scale(0.96, 1.05); }
+    100% { transform: translateY(0) scale(1, 1); }
+}
+
+/* ---------- Toast ---------- */
+
+#toast {
+    position: absolute;
+    left: 50%;
+    bottom: 64px;
+    transform: translateX(-50%);
+    padding: 20px 38px;
+    border-radius: 32px;
+    background: rgba(44, 44, 50, 0.96);
+    font-size: 26px;
+    z-index: 9;
+    transition: opacity 260ms, transform 300ms var(--spring);
+}
+#toast.hidden { opacity: 0; transform: translateX(-50%) translateY(20px); }
+
+/* ---------- Entrance ---------- */
+
+@keyframes rise {
+    from { opacity: 0; transform: translateY(26px); }
+    to   { opacity: 1; transform: none; }
+}
+/* `backwards` (not `both`) so the finished animation releases transform for .focused */
+.enter { -webkit-animation: rise 560ms var(--ease) backwards; animation: rise 560ms var(--ease) backwards; }
+#stage.booting #top, #stage.booting #shelf { opacity: 0; }

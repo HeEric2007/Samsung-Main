@@ -1,0 +1,13 @@
+# Build output
+dist/
+.buildResult/
+
+# Your personal mascot images stay local
+launcher/img/mascots/*
+!launcher/img/mascots/.gitkeep
+
+# Tools
+tools/venv/
+tools/.tv-token
+__pycache__/
+.DS_Store

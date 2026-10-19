@@ -1,0 +1,1 @@
+samsungtvws>=2.6

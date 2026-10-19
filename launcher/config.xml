@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Tizen widget manifest for VibeHome.
+  Package id must be exactly 10 letters/digits. If you change it, change APP_ID in
+  tools/build-and-install.sh and tools/tv.py too.
+-->
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets"
+        id="http://vibehack.local/VibeHome" version="1.0.0" viewmodes="maximized">
+    <tizen:application id="VbHackTV01.VibeHome" package="VbHackTV01" required_version="2.3"/>
+    <content src="index.html"/>
+    <feature name="http://tizen.org/feature/screen.size.normal.1080.1920"/>
+    <icon src="icon.png"/>
+    <name>VibeHome</name>
+
+    <!-- List and launch installed apps -->
+    <tizen:privilege name="http://tizen.org/privilege/application.launch"/>
+    <tizen:privilege name="http://tizen.org/privilege/application.info"/>
+    <!-- Remote control keys -->
+    <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
+    <!-- Inputs menu (HDMI switching). If install fails with a privilege error, delete this
+         line; the Inputs pill then falls back to "press SOURCE on your remote". -->
+    <tizen:privilege name="http://tizen.org/privilege/tv.window"/>
+    <!-- Wi-Fi name in the top-right pill -->
+    <tizen:privilege name="http://tizen.org/privilege/system"/>
+    <!-- Font from Google Fonts (optional; falls back to system font offline) -->
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
+
+    <tizen:profile name="tv-samsung"/>
+    <tizen:setting screen-orientation="landscape" context-menu="disable" background-support="disable"
+                   encryption="disable" install-location="auto" hwkey-event="enable"/>
+    <access origin="*" subdomains="true"/>
+</widget>

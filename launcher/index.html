@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1920, height=1080, user-scalable=no">
+    <title>VibeHome</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit:200,300,400,500,600&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="stage" class="booting">
+
+        <header id="top">
+            <div id="clockblock">
+                <div id="greeting">Good evening</div>
+                <div id="clock">9:41</div>
+                <div id="date">Sunday, October 18</div>
+            </div>
+            <nav id="pills">
+                <div class="pill focusable" id="pill-inputs" data-zone="pills" data-index="0">
+                    <span class="pill-icon">&#x21C4;</span><span class="pill-label">Inputs</span>
+                </div>
+                <div class="pill focusable" id="pill-wifi" data-zone="pills" data-index="1">
+                    <span class="pill-icon">&#x25CF;</span><span class="pill-label" id="wifi-label">Network</span>
+                </div>
+                <div class="pill focusable" id="pill-close" data-zone="pills" data-index="2">
+                    <span class="pill-icon">&#x2715;</span><span class="pill-label">Close</span>
+                </div>
+            </nav>
+            <div id="inputs-menu" class="menu hidden"></div>
+        </header>
+
+        <section id="shelf">
+            <div id="shelf-glow"></div>
+            <div id="shelf-title"></div>
+            <div id="shelf-hint">Press &#x25BC; for all apps</div>
+        </section>
+
+        <section id="lower">
+            <div id="dock-band">
+                <div id="dock" class="row"></div>
+            </div>
+            <div id="grid-wrap">
+                <div id="grid"></div>
+            </div>
+            <div id="mascots"></div>
+            <div id="highlight"></div>
+        </section>
+
+        <div id="toast" class="hidden"></div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

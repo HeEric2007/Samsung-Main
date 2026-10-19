@@ -1,0 +1,29 @@
+# tizen-vibehack: Samsung TV ad + viewing-data blocklist (SAFE tier)
+#
+# Add to Pi-hole (Adlists -> paste the raw GitHub URL of this file) or AdGuard Home
+# (Filters -> DNS blocklists). Apps, the app store and streaming keep working with this tier.
+#
+# Collected from community lists (wassname / hkamran80 Samsung gists, lazyadmin.nl).
+# Note: this cannot remove ads inside YouTube. Use TizenTube for that (see README).
+
+# Samsung ad network
+samsungads.com
+ads.samsungads.com
+config.samsungads.com
+events.samsungads.com
+samsungadhub.com
+ad.samsungadhub.com
+ads.samsung.com
+tvx.adgrx.com
+
+# ACR: "automatic content recognition", i.e. what's on your screen, sent home
+samsungacr.com
+log-config.samsungacr.com
+log-ingestion.samsungacr.com
+log-1.samsungacr.com
+log-2.samsungacr.com
+log-3.samsungacr.com
+acr0.samsungcloudsolution.com
+
+# Misc telemetry
+log.internetat.tv

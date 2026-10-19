@@ -1,0 +1,16 @@
+# tizen-vibehack: AGGRESSIVE tier. Read before using.
+#
+# Use together with samsung-ads.txt only if the safe tier isn't enough.
+# Reported side effects from people running these lists:
+#   - samsungcloudsolution.* : breaks the Samsung app store, Smart Hub content and
+#                              Samsung TV Plus; some apps stop loading
+#   - samsungotn.net         : blocks FIRMWARE UPDATES. Some people want this, because an
+#                              update can change Developer Mode behaviour. Your call.
+# If something breaks, remove this list and re-add only the lines you're sure about.
+
+samsungcloudsolution.com
+samsungcloudsolution.net
+samsungqbe.com
+gpm.samsungqbe.com
+samsungrm.net
+samsungotn.net
