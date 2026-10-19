@@ -96,7 +96,8 @@ Want a couple of buddies sitting on the dock? Drop transparent PNGs named `1.png
 `2.png` into `launcher/img/mascots/` and rebuild. They bob gently and hop whenever you move
 between dock apps. That folder is git-ignored, so pictures you add stay on your machine
 and TV and never get pushed to GitHub. Images with a real transparent background look
-best; ones with a baked-in checkerboard will show the checkerboard.
+best. If yours has a white or fake checkerboard background, clean it first:
+`python3 tools/prep-mascot.py ~/Downloads/picture.png launcher/img/mascots/1.png`
 
 ### Desktop preview
 
