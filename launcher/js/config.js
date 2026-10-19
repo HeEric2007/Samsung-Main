@@ -8,7 +8,7 @@
 window.VIBE_CONFIG = {
     // Up to 6 apps for the dock, in order. Missing apps are skipped.
     // Using TizenTube for ad-free YouTube? Put "TizenBrew" here instead of "YouTube".
-    dock: ["Netflix", "YouTube", "Prime Video", "Disney+", "Spotify"],
+    dock: ["Netflix", "YouTube", "Disney+", "Spotify"],
 
     // Apps to hide from the "all apps" grid (substring match on name).
     hidden: [
