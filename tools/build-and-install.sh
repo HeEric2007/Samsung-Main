@@ -57,6 +57,18 @@ say "Packaging and signing with certificate profile '$CERT_PROFILE'"
 WGT="$(ls "$BUILD"/.buildResult/*.wgt 2>/dev/null | head -n 1)"
 [ -n "$WGT" ] || die "Packaging produced no .wgt. Check the certificate profile name with: $TIZEN security-profiles list"
 
+# Same as Tizen Studio's Device Manager > "Permit to install applications": the TV only
+# accepts Samsung-signed apps after it has the certificate's device profile.
+CERT_DIR="${CERT_DIR:-$HOME/SamsungCertificate/$CERT_PROFILE}"
+if [ -f "$CERT_DIR/device-profile.xml" ]; then
+    say "Permitting installs from certificate '$CERT_PROFILE'"
+    "$SDB" -s "$SERIAL" push "$CERT_DIR/device-profile.xml" /home/developer/ \
+        || echo "    (push failed; use Device Manager > Permit to install applications)"
+else
+    echo "    No device-profile.xml in $CERT_DIR. If install fails with 118012, use"
+    echo "    Tizen Studio > Tools > Device Manager > right-click TV > Permit to install applications."
+fi
+
 say "Installing $(basename "$WGT")"
 "$TIZEN" install -n "$(basename "$WGT")" -s "$SERIAL" -- "$(dirname "$WGT")"
 
