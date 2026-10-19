@@ -232,9 +232,9 @@ html, body {
 
 #mascots {
     position: absolute;
-    right: 130px;
-    top: -228px;
-    height: 240px;
+    right: 120px;
+    top: -296px;
+    height: 310px;
     display: flex;
     align-items: flex-end;
     pointer-events: none;
@@ -242,8 +242,8 @@ html, body {
     transition: opacity 300ms var(--ease);
 }
 #mascots img {
-    height: 230px;
-    margin-left: 24px;
+    height: 300px;             /* the size tools/prep-mascot.py outputs; bigger gets blurry */
+    margin-left: 28px;
     -webkit-animation: bob 3.6s ease-in-out infinite;
     animation: bob 3.6s ease-in-out infinite;
     transform-origin: 50% 100%;
