@@ -17,11 +17,13 @@
     <tizen:privilege name="http://tizen.org/privilege/application.info"/>
     <!-- Remote control keys -->
     <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
-    <!-- Inputs menu (HDMI switching). If install fails with a privilege error, delete this
-         line; the Inputs pill then falls back to "press SOURCE on your remote". -->
+    <!-- Optional extras, off by default because some retail TVs refuse to install apps that
+         ask for them (error 118012). Uncomment one at a time to try:
+           tv.window : lets the Inputs pill switch HDMI itself
+           system    : shows the Wi-Fi name instead of "Online"
     <tizen:privilege name="http://tizen.org/privilege/tv.window"/>
-    <!-- Wi-Fi name in the top-right pill -->
     <tizen:privilege name="http://tizen.org/privilege/system"/>
+    -->
     <!-- Font from Google Fonts (optional; falls back to system font offline) -->
     <tizen:privilege name="http://tizen.org/privilege/internet"/>
 

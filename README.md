@@ -124,9 +124,11 @@ The first command shows an **Allow** prompt on the TV; accept it once.
   and the TV must be fully restarted after setting it (hold power until the logo).
 - **Install fails with a certificate error:** use a **Samsung** certificate (not Tizen),
   privilege level Public, with your TV's DUID included.
-- **Install fails with a privilege error:** delete the `tv.window` line in
-  `launcher/config.xml`. The Inputs pill then tells you to press SOURCE instead of switching
-  inputs itself.
+- **`install failed[118012]`:** in Tizen Studio open **Device Manager** (Tools menu),
+  right-click your TV → **Permit to install applications**, then rerun the script. The
+  optional `tv.window` and `system` privileges are commented out in `launcher/config.xml`
+  for the same reason; uncomment them one at a time only after a plain install works.
+  Without `tv.window`, the Inputs pill tells you to press SOURCE instead of switching itself.
 - **Inputs switching is best-effort.** It uses Samsung's TV Window API, which behaves
   differently across firmware. If it doesn't switch, SOURCE on the remote always works.
 - **VibeHome can't be the system home screen.** Tizen doesn't allow it. The HOME button
