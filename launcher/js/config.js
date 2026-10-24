@@ -11,7 +11,7 @@ window.VIBE_CONFIG = {
 
     // Up to 7 apps for the dock, in order. Missing apps are skipped.
     // Using TizenTube for ad-free YouTube? Put "TizenBrew" here instead of "YouTube".
-    dock: ["Netflix", "YouTube", "Disney+", "Hulu", "Paramount+", "Apple TV", "Spotify"],
+    dock: ["YouTube", "Netflix", "Disney+", "Hulu", "Paramount+", "Apple TV", "Spotify"],
 
     // Apps to hide from the "all apps" grid (substring match on name).
     hidden: [
@@ -22,7 +22,7 @@ window.VIBE_CONFIG = {
 
     // Strict mode: if this list has names, the all-apps screen shows ONLY the dock apps
     // plus these (if installed). Leave empty to show everything except `hidden`.
-    onlyShow: [],
+    onlyShow: ["Prime Video", "Max", "Peacock", "Pluto TV", "Tubi", "ESPN", "Sling"],
 
     // Samsung's internal system apps are hidden automatically. Set true to see them.
     showSystemApps: false,
