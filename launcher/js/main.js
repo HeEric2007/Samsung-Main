@@ -98,6 +98,7 @@
                     if (icon && icon.charAt(0) === '/') { icon = 'file://' + icon; }
                     out.push({ id: a.id, name: a.name, icon: icon });
                 });
+                markPlaceholderIcons(out);
                 done(out);
             }, function (e) {
                 toast('Could not list apps: ' + (e && e.message));
@@ -108,6 +109,25 @@
             done([]);
         }
     }
+
+    // Samsung hands out a generic Tizen logo for apps whose real icon it won't share.
+    // Treat an icon as a placeholder if its path looks generic, or if several different
+    // apps report the exact same icon file. Those tiles show the app's name instead.
+    function markPlaceholderIcons(list) {
+        var count = {};
+        list.forEach(function (a) { if (a.icon) { count[a.icon] = (count[a.icon] || 0) + 1; } });
+        list.forEach(function (a) {
+            if (!a.icon) { return; }
+            if (count[a.icon] > 1 || /(\/usr\/share\/icons|default|noicon|no_icon|tizen|unknown)/i.test(a.icon)) {
+                a.icon = '';
+            }
+        });
+    }
+
+    // Your own logo images: launcher/img/icons/<name>.png, where <name> is the app name in
+    // lowercase with only letters and digits (YouTube -> youtube.png, Disney+ -> disney.png,
+    // Apple TV -> appletv.png). These win over whatever the TV provides.
+    function iconSlug(name) { return lower(name).replace(/[^a-z0-9]/g, ''); }
 
     // Samsung lists lots of internal services, widgets and test apps alongside real ones.
     // Real store apps have numeric ids (e.g. 111299001912 for YouTube); system ones usually
@@ -194,15 +214,18 @@
         letter.className = 'letter';
         letter.textContent = app.name;
 
-        if (app.icon) {
-            var img = document.createElement('img');
-            img.onerror = function () { art.removeChild(img); art.appendChild(letter); };
-            img.onload = function () { sampleColor(img, app, art); };
-            img.src = app.icon;
-            art.appendChild(img);
-        } else {
-            art.appendChild(letter);
-        }
+        // Try your own logo first, then the TV's icon, then fall back to the name.
+        var srcs = ['img/icons/' + iconSlug(app.name) + '.png'];
+        if (app.icon) { srcs.push(app.icon); }
+        var img = document.createElement('img'), attempt = 0;
+        img.onerror = function () {
+            attempt++;
+            if (attempt < srcs.length) { img.src = srcs[attempt]; }
+            else { if (img.parentNode) { art.removeChild(img); } art.appendChild(letter); }
+        };
+        img.onload = function () { sampleColor(img, app, art); };
+        img.src = srcs[0];
+        art.appendChild(img);
 
         var name = document.createElement('div');
         name.className = 'name';
@@ -339,10 +362,19 @@
     function renderMascots() {
         var box = $('mascots');
         box.innerHTML = '';
+        // An entry without an extension (e.g. "img/mascots/1") tries .gif, then .png, then .webp,
+        // so you can drop in 1.gif or 1.png without editing this file.
+        var EXTS = ['.gif', '.png', '.webp'];
         (CFG.mascots || []).forEach(function (src) {
-            var img = document.createElement('img');
-            img.onerror = function () { if (img.parentNode) { box.removeChild(img); } };
-            img.src = src;
+            var hasExt = /\.(png|gif|webp|jpe?g)$/i.test(src);
+            var tries = hasExt ? [src] : EXTS.map(function (e) { return src + e; });
+            var img = document.createElement('img'), n = 0;
+            img.onerror = function () {
+                n++;
+                if (n < tries.length) { img.src = tries[n]; }
+                else if (img.parentNode) { box.removeChild(img); }
+            };
+            img.src = tries[0];
             box.appendChild(img);
         });
     }
