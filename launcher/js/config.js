@@ -6,7 +6,10 @@
  * the exact names installed on your TV.
  */
 window.VIBE_CONFIG = {
-    // Up to 6 apps for the dock, in order. Missing apps are skipped.
+    // Look: "default" (clean, tvOS-style) or "pixel" (8-bit arcade).
+    theme: "default",
+
+    // Up to 7 apps for the dock, in order. Missing apps are skipped.
     // Using TizenTube for ad-free YouTube? Put "TizenBrew" here instead of "YouTube".
     dock: ["Netflix", "YouTube", "Disney+", "Spotify"],
 

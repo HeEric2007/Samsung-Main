@@ -57,8 +57,13 @@
         return [parseInt(s.substr(0, 2), 16), parseInt(s.substr(2, 2), 16), parseInt(s.substr(4, 2), 16)];
     }
 
+    var PIXEL = CFG.theme === 'pixel';
+
     function tileBackground(hex) {
         var c = hexToRgb(hex);
+        if (PIXEL) {   // flat colour, no gradients in 8-bit land
+            return 'rgb(' + Math.round(c[0] * 0.7) + ',' + Math.round(c[1] * 0.7) + ',' + Math.round(c[2] * 0.7) + ')';
+        }
         var a = 'rgb(' + Math.round(c[0] * 0.55) + ',' + Math.round(c[1] * 0.55) + ',' + Math.round(c[2] * 0.55) + ')';
         var b = 'rgb(' + Math.round(c[0] * 0.22) + ',' + Math.round(c[1] * 0.22) + ',' + Math.round(c[2] * 0.22) + ')';
         return 'linear-gradient(145deg,' + a + ' 0%,' + b + ' 100%)';
@@ -114,7 +119,7 @@
         apps.forEach(function (a) { a.color = colorFor(a.name); });
 
         dockApps = [];
-        (CFG.dock || []).slice(0, 6).forEach(function (want) {
+        (CFG.dock || []).slice(0, 7).forEach(function (want) {
             for (var i = 0; i < apps.length; i++) {
                 if (lower(apps[i].name).indexOf(lower(want)) !== -1 && dockApps.indexOf(apps[i]) === -1) {
                     dockApps.push(apps[i]);
@@ -491,6 +496,7 @@
     }
 
     function boot() {
+        if (PIXEL) { document.body.className += ' pixel'; }
         registerKeys();
         tick();
         setInterval(tick, 10000);

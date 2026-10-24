@@ -288,3 +288,128 @@ html, body {
 /* `backwards` (not `both`) so the finished animation releases transform for .focused */
 .enter { -webkit-animation: rise 560ms var(--ease) backwards; animation: rise 560ms var(--ease) backwards; }
 #stage.booting #top, #stage.booting #shelf { opacity: 0; }
+
+/* =====================================================================
+ * 8-BIT THEME  (config.js: theme: "pixel")
+ * Square corners, chunky borders, hard drop shadows, flat colours,
+ * a bundled pixel font, scanlines, and movement that snaps in steps.
+ * ===================================================================== */
+
+@font-face {
+    font-family: "Press Start 2P";
+    src: url("../fonts/press-start-2p-latin-400-normal.woff2") format("woff2"),
+         url("../fonts/press-start-2p-latin-400-normal.woff") format("woff");
+    font-display: block;
+}
+
+body.pixel {
+    --bg: #0d0b1e;
+    --band: #1b1838;
+    --text: #fff8e7;
+    --muted: #9b93c9;
+    --px-ink: #000;
+    --px-gold: #ffd23f;
+    background: var(--bg);
+    font-family: "Press Start 2P", "Courier New", monospace;
+    -webkit-font-smoothing: none;
+    letter-spacing: 0;
+}
+
+/* CRT scanlines + a faint pixel grid over everything */
+body.pixel #stage::after {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 20;
+    background:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0, rgba(0, 0, 0, 0.22) 2px, transparent 2px, transparent 4px);
+}
+
+/* Starfield background (static, cheap) */
+body.pixel #stage {
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(#fff8e7 1.5px, transparent 2px),
+        radial-gradient(#9b93c9 1.5px, transparent 2px);
+    background-size: 220px 180px, 140px 120px;
+    background-position: 30px 40px, 100px 90px;
+}
+
+body.pixel #greeting { font-size: 20px; color: var(--muted); }
+body.pixel #clock    { font-size: 92px; font-weight: 400; letter-spacing: 0; margin-top: 22px; line-height: 1;
+                       text-shadow: 6px 6px 0 var(--px-ink), 6px 6px 0 #5a3fc0; color: var(--px-gold); }
+body.pixel #date     { font-size: 18px; margin-top: 22px; }
+
+body.pixel .pill {
+    height: 56px;
+    padding: 0 20px;
+    border-radius: 0;
+    background: var(--band);
+    border: 4px solid var(--text);
+    box-shadow: 6px 6px 0 var(--px-ink);
+    font-size: 14px;
+    color: var(--text);
+    transition: transform 160ms steps(2);
+}
+body.pixel .pill-icon { font-size: 14px; }
+body.pixel .pill.focused { background: var(--px-gold); color: #000; border-color: #000; transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--px-ink); }
+
+body.pixel .menu { border-radius: 0; background: var(--band); border: 4px solid var(--text); box-shadow: 10px 10px 0 var(--px-ink); }
+body.pixel .menu-item { border-radius: 0; font-size: 16px; color: var(--text); }
+body.pixel .menu-item.focused { background: var(--px-gold); color: #000; }
+body.pixel .menu-item.focused::before { content: "\25B6  "; }
+
+body.pixel #shelf-glow { display: none; }
+body.pixel #shelf-title {
+    font-size: 54px;
+    letter-spacing: 0;
+    font-weight: 400;
+    text-shadow: 6px 6px 0 var(--px-ink);
+    transition: opacity 120ms steps(2);
+}
+body.pixel #shelf-title.swap { transform: none; }
+body.pixel #shelf-hint { font-size: 14px; margin-top: 26px; }
+body.pixel #shelf-hint::before { content: "PRESS START  \2022  "; color: var(--px-gold); }
+
+body.pixel #dock-band {
+    border-radius: 0;
+    background: var(--band);
+    border: 6px solid var(--text);
+    box-shadow: 0 0 0 6px var(--px-ink), 14px 14px 0 6px var(--px-ink);
+}
+
+body.pixel .tile, body.pixel .tile .art { border-radius: 0; }
+body.pixel .tile .art {
+    border: 4px solid var(--px-ink);
+    box-shadow: inset -8px -8px 0 rgba(0, 0, 0, 0.35), inset 8px 8px 0 rgba(255, 255, 255, 0.18);
+}
+body.pixel .tile .letter { font-size: 20px; font-weight: 400; line-height: 1.5; letter-spacing: 0;
+                           text-shadow: 3px 3px 0 var(--px-ink); }
+body.pixel .grid-tile .letter { font-size: 14px; }
+body.pixel .dock-tile .letter { font-size: 15px; padding: 0 10px; }
+body.pixel .tile .name { font-size: 14px; margin-top: 18px; text-shadow: 3px 3px 0 var(--px-ink); }
+body.pixel .tile { transition: transform 180ms steps(3); }
+body.pixel .tile.focused { transform: scale(1.09) translateY(-8px); }
+
+/* Highlight: blinking gold cursor box instead of glass */
+body.pixel #highlight {
+    border-radius: 0;
+    background: transparent;
+    border: 6px solid var(--px-gold);
+    box-shadow: 0 0 0 4px var(--px-ink), 10px 10px 0 4px var(--px-ink);
+    transition: transform 200ms steps(4), width 200ms steps(4), height 200ms steps(4), opacity 100ms;
+    -webkit-animation: px-blink 1s steps(1) infinite;
+    animation: px-blink 1s steps(1) infinite;
+}
+@keyframes px-blink { 0%, 100% { border-color: var(--px-gold); } 50% { border-color: #fff8e7; } }
+
+/* Mascots: crisp pixels, hop in jerky frames */
+body.pixel #mascots img { image-rendering: pixelated; image-rendering: -webkit-optimize-contrast;
+                          -webkit-animation-timing-function: steps(2); animation-timing-function: steps(2); }
+body.pixel #mascots img.hop { -webkit-animation: hop 480ms steps(4); animation: hop 480ms steps(4); }
+
+body.pixel #toast { border-radius: 0; border: 4px solid var(--text); background: var(--band);
+                    box-shadow: 8px 8px 0 var(--px-ink); font-size: 16px; }
+
+body.pixel .enter { -webkit-animation-timing-function: steps(5); animation-timing-function: steps(5); }
