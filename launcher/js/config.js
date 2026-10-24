@@ -7,17 +7,17 @@
  */
 window.VIBE_CONFIG = {
     // Look: "default" (clean, tvOS-style) or "pixel" (8-bit arcade).
-    theme: "default",
+    theme: "pixel",
 
     // Up to 7 apps for the dock, in order. Missing apps are skipped.
     // Using TizenTube for ad-free YouTube? Put "TizenBrew" here instead of "YouTube".
-    dock: ["Netflix", "YouTube", "Disney+", "Spotify"],
+    dock: ["Netflix", "YouTube", "Disney+", "Hulu", "Paramount+", "Apple TV", "Spotify"],
 
     // Apps to hide from the "all apps" grid (substring match on name).
     hidden: [
         "e-Manual", "Samsung Promotion", "Samsung Health", "Universal Guide",
         "Gallery", "Web Browser", "SmartThings", "Art Store", "Bixby",
-        "Samsung TV Plus", "Rakuten", "Facebook Watch", "VibeHome"
+        "Samsung TV Plus", "Rakuten", "Facebook Watch", "VibeHome", "Tizen"
     ],
 
     // Entries for the Inputs pill. type is one of: "TV", "HDMI", "AV", "COMP".
