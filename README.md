@@ -99,6 +99,17 @@ and TV and never get pushed to GitHub. Images with a real transparent background
 best. If yours has a white or fake checkerboard background, clean it first:
 `python3 tools/prep-mascot.py ~/Downloads/picture.png launcher/img/mascots/1.png`
 
+### App logos
+
+Samsung hides the real icon for some apps and hands out a generic Tizen logo instead. VibeHome
+detects that and shows the app's name. To use a logo of your own, put a PNG in
+`launcher/img/icons/` named after the app in lowercase letters and digits only
+(`youtube.png`, `disney.png`, `appletv.png`, `paramount.png`) and reinstall. That folder is
+git-ignored, like the mascots.
+
+Mascots can be animated GIFs too: name them `1.gif` / `2.gif` (a GIF beats a PNG in the same
+slot). `tools/prep-mascot.py` cleans GIF backgrounds frame by frame.
+
 ### Desktop preview
 
 Open `launcher/index.html` in a browser. Without the TV's `tizen` API it runs in demo

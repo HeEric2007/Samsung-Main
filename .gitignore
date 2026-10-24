@@ -11,3 +11,7 @@ tools/venv/
 tools/.tv-token
 __pycache__/
 .DS_Store
+
+# Your own app logo images stay local too
+launcher/img/icons/*
+!launcher/img/icons/.gitkeep

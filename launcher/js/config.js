@@ -37,9 +37,10 @@ window.VIBE_CONFIG = {
     ],
 
     // Little buddies that sit on the dock and hop when you switch apps.
-    // Drop transparent PNGs into launcher/img/mascots/ (that folder is git-ignored,
-    // so your pictures stay on your machine and TV). Missing files are skipped.
-    mascots: ["img/mascots/1.png", "img/mascots/2.png"],
+    // Drop transparent images named 1.png / 1.gif and 2.png / 2.gif into
+    // launcher/img/mascots/ (git-ignored, so your pictures stay on your machine and TV).
+    // Animated GIFs work. If both 2.gif and 2.png exist, the GIF wins.
+    mascots: ["img/mascots/1", "img/mascots/2"],
 
     columns: 6,          // tiles per row in the all-apps grid
     use24h: false,       // clock format

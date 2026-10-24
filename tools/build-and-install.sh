@@ -43,10 +43,11 @@ rm -rf "$BUILD"
 mkdir -p "$(dirname "$BUILD")"
 cp -R "$SRC" "$BUILD"
 find "$BUILD" -name '.gitkeep' -delete
-if ls "$BUILD"/img/mascots/*.png >/dev/null 2>&1; then
-    echo "    mascots: $(cd "$BUILD/img/mascots" && ls *.png | tr '\n' ' ')"
+MASCOTS="$(cd "$BUILD/img/mascots" 2>/dev/null && ls *.png *.gif *.webp 2>/dev/null | tr '\n' ' ' || true)"
+if [ -n "$MASCOTS" ]; then
+    echo "    mascots: $MASCOTS"
 else
-    echo "    mascots: none (drop PNGs into launcher/img/mascots/ to add some)"
+    echo "    mascots: none (drop PNGs or GIFs into launcher/img/mascots/ to add some)"
 fi
 
 say "Building web project"
