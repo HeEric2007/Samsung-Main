@@ -109,27 +109,71 @@
         }
     }
 
+    // Samsung lists lots of internal services, widgets and test apps alongside real ones.
+    // Real store apps have numeric ids (e.g. 111299001912 for YouTube); system ones usually
+    // look like org.tizen.* / com.samsung.* or have dotted, space-free names.
+    function isSystemApp(a) {
+        var id = lower(a.id), n = lower(a.name);
+        if (/^(org\.tizen|com\.samsung|samsung\.|tizen\.|com\.tizen)/.test(id)) { return true; }
+        if (n.indexOf('tizen') !== -1) { return true; }
+        if (n.indexOf('.') !== -1 && n.indexOf(' ') === -1 && n.length > 12) { return true; }
+        if (/(service|widget|daemon|launcher|installer|updater|\btest\b|sample|debug|agent|provider)/.test(n)) { return true; }
+        return false;
+    }
+
+    // Best app for a wanted name: exact > starts-with > contains; real apps before system
+    // ones; apps with a logo before apps without.
+    function findApp(want, exclude) {
+        var w = lower(want), best = null, bestScore = -1;
+        apps.forEach(function (a) {
+            if (exclude.indexOf(a) !== -1) { return; }
+            var n = lower(a.name), s;
+            if (n === w) { s = 300; }
+            else if (n.indexOf(w) === 0) { s = 200; }
+            else if (n.indexOf(w) !== -1) { s = 100; }
+            else { return; }
+            if (!a.system) { s += 20; }
+            if (a.icon) { s += 5; }
+            if (s > bestScore) { best = a; bestScore = s; }
+        });
+        return best;
+    }
+
     function organize(list) {
-        var seen = {};
-        apps = list.filter(function (a) {
-            if (seen[a.name]) { return false; }
-            seen[a.name] = true;
-            return true;
-        }).sort(function (a, b) { return lower(a.name) < lower(b.name) ? -1 : 1; });
+        // De-duplicate by name, keeping the real app (non-system, with a logo) over copies.
+        var byName = {}, k;
+        list.forEach(function (a) {
+            a.system = isSystemApp(a);
+            var key = lower(a.name), cur = byName[key];
+            var rank = function (x) { return (x.system ? 0 : 2) + (x.icon ? 1 : 0); };
+            if (!cur || rank(a) > rank(cur)) { byName[key] = a; }
+        });
+        apps = [];
+        for (k in byName) { if (byName.hasOwnProperty(k)) { apps.push(byName[k]); } }
+        apps.sort(function (a, b) { return lower(a.name) < lower(b.name) ? -1 : 1; });
         apps.forEach(function (a) { a.color = colorFor(a.name); });
 
         dockApps = [];
         (CFG.dock || []).slice(0, 7).forEach(function (want) {
-            for (var i = 0; i < apps.length; i++) {
-                if (lower(apps[i].name).indexOf(lower(want)) !== -1 && dockApps.indexOf(apps[i]) === -1) {
-                    dockApps.push(apps[i]);
-                    return;
-                }
-            }
+            var a = findApp(want, dockApps);
+            if (a) { dockApps.push(a); }
         });
-        if (!dockApps.length) { dockApps = apps.slice(0, 4); }
+        if (!dockApps.length) { dockApps = apps.filter(function (a) { return !a.system; }).slice(0, 4); }
 
-        gridApps = apps.filter(function (a) { return !matches(a.name, CFG.hidden); });
+        var only = CFG.onlyShow || [];
+        if (only.length) {
+            // Strict mode: dock apps plus the listed ones, nothing else.
+            gridApps = dockApps.slice();
+            only.forEach(function (want) {
+                var a = findApp(want, gridApps);
+                if (a) { gridApps.push(a); }
+            });
+            gridApps.sort(function (a, b) { return lower(a.name) < lower(b.name) ? -1 : 1; });
+        } else {
+            gridApps = apps.filter(function (a) {
+                return !matches(a.name, CFG.hidden) && (CFG.showSystemApps || !a.system);
+            });
+        }
     }
 
     // ---------- rendering ----------

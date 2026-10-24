@@ -20,6 +20,13 @@ window.VIBE_CONFIG = {
         "Samsung TV Plus", "Rakuten", "Facebook Watch", "VibeHome"
     ],
 
+    // Strict mode: if this list has names, the all-apps screen shows ONLY the dock apps
+    // plus these (if installed). Leave empty to show everything except `hidden`.
+    onlyShow: [],
+
+    // Samsung's internal system apps are hidden automatically. Set true to see them.
+    showSystemApps: false,
+
     // Entries for the Inputs pill. type is one of: "TV", "HDMI", "AV", "COMP".
     inputs: [
         { label: "Live TV", type: "TV",   number: 1 },
